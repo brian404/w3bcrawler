@@ -16,6 +16,18 @@ max_depth = 3
 
 results = []
 
+def process_url(url, base_url, visited_urls, crawl_frontier):
+    if url:
+        parsed_url = urlparse(url)
+        if parsed_url.netloc:  # External link
+            absolute_url = url
+            # Add additional logic for handling external links if needed
+        else:  # Internal link or relative URL
+            absolute_url = urljoin(base_url, url)
+
+        if absolute_url not in visited_urls:
+            crawl_frontier.append(absolute_url)
+
 while crawl_frontier:
     current_url = crawl_frontier.pop(0)
 
@@ -62,20 +74,6 @@ while crawl_frontier:
 
     if len(current_url.split('/')) - 2 >= max_depth:
         continue
-
-
-def process_url(url, base_url, visited_urls, crawl_frontier):
-    if url:
-        parsed_url = urlparse(url)
-        if parsed_url.netloc:  # External link
-            absolute_url = url
-            # Add additional logic for handling external links if needed
-        else:  # Internal link or relative URL
-            absolute_url = urljoin(base_url, url)
-
-        if absolute_url not in visited_urls:
-            crawl_frontier.append(absolute_url)
-
 
 table_headers = ["URL", "Title", "Content Type", "Final URL", "Error"]
 print(tabulate(results, headers=table_headers, tablefmt="grid"))
